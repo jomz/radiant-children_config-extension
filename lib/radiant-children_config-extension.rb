@@ -1,0 +1,2 @@
+module RadiantChildrenConfigExtension
+end
