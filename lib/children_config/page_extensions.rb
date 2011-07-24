@@ -3,7 +3,7 @@ module ChildrenConfig::PageExtensions
     base.class_eval do
       after_save :create_children
       
-      def self.new_with_page_parts(config = Radiant::Config, parts = String)
+      def self.new_with_children_config(config = Radiant::Config, parts = String)
         begin
           unless parts.empty?
             config = YAML::load(parts)

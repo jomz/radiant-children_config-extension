@@ -7,7 +7,7 @@ module ChildrenConfig::PagesControllerExtensions
         unless params[:page_id].blank?
           parent_page = Page.find(params[:page_id]);
           child_parts = parent_page.part("children_config").content
-          self.model = model_class.new_with_page_parts(config, child_parts)
+          self.model = model_class.new_with_children_config(config, child_parts)
         else
           self.model = model_class.new_with_defaults(config)
           self.model.slug = '/'
