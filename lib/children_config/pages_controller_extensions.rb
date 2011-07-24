@@ -5,8 +5,8 @@ module ChildrenConfig::PagesControllerExtensions
 
       def new
         unless params[:page_id].blank?
-          parent_page = Page.find(params[:page_id]);
-          child_parts = parent_page.part("children_config").content
+          parent_page = Page.find(params[:page_id])
+          child_parts = parent_page.part("children_config").try(:content)
           self.model = model_class.new_with_children_config(config, child_parts)
         else
           self.model = model_class.new_with_defaults(config)
