@@ -1,6 +1,7 @@
 module ChildrenConfig::PageExtensions
   def self.included(base)
     base.class_eval do
+      after_save :create_children
       
       def self.new_with_page_parts(config = Radiant::Config, parts = String)
         begin
@@ -29,7 +30,35 @@ module ChildrenConfig::PageExtensions
           new_with_defaults(config)
         end
       end
+      
+      
     end
-    
+  end
+  
+  def create_children
+    if updated_at == created_at and parent and children_config = parent.part(:children_config).try(:content)
+      config = YAML::load(children_config)
+      if config.is_a?(Array) && config.select{|c| c.has_key? "children"}.size > 0
+        config.select{|c| c.has_key? "children"}.first["children"].each do |child|
+          options = {}
+          options[:parent_id] = self.id
+          options[:status_id] = Status[child['status'].downcase.to_sym].id
+          page = Page.new(options)
+          page.breadcrumb = page.title = child['title']
+          page.slug = child['title'].slugify
+          if child.has_key? "parts"
+            child["parts"].each do |part|
+              part["page_part_type"] = part["page_part_type"].to_s.camelize
+              page.parts.build(part)
+            end
+          else
+            page.parts.concat default_page_parts(Radiant::Config)
+          end
+          raise page.errors.full_messages.join ", " unless page.valid?
+          page.save
+        end
+      
+      end
+    end
   end
 end
