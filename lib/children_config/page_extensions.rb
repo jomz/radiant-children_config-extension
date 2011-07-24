@@ -52,7 +52,12 @@ module ChildrenConfig::PageExtensions
               page.parts.build(part)
             end
           else
-            page.parts.concat default_page_parts(Radiant::Config)
+            config = Radiant::Config
+            default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
+            default_parts.map do |name|
+              page.parts << PagePart.new(:name => name, :filter_id => config['defaults.page.filter'])
+            end
+            
           end
           raise page.errors.full_messages.join ", " unless page.valid?
           page.save
