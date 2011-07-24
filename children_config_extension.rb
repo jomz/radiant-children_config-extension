@@ -3,15 +3,8 @@
 require 'radiant-children_config-extension/version'
 class ChildrenConfigExtension < Radiant::Extension
   version RadiantChildrenConfigExtension::VERSION
-  description "Adds children_config to Radiant."
-  url "http://yourwebsite.com/children_config"
-  
-  # extension_config do |config|
-  #   config.gem 'some-awesome-gem'
-  #   config.after_initialize do
-  #     run_something
-  #   end
-  # end
+  description "Allows you to override the configuration of page parts for new children under a given page."
+  url "https://github.com/jomz/radiant-children_config-extension"
   
   def activate
     Page.send :include, ChildrenConfig::PageExtensions
