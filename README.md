@@ -1,9 +1,9 @@
-= Children Config
+# Children Config
 
 Allows you to define new default page parts on every page.
 Based on the [default\_page\_parts extension](https://github.com/santry/radiant-default-page-parts-extension), originally created by Sean Santry.
 
-== How to use
+## How to use
 
 Let's say you want all pages under "Events" to have the page parts "location", "description" and "date" by default. 
 Simply add a "children_config" page part to the "Events" page. In the content of that page part, put: 
