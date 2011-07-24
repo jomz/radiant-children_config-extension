@@ -43,12 +43,14 @@ module ChildrenConfig::PageExtensions
           options = {}
           options[:parent_id] = self.id
           options[:status_id] = Status[child['status'].downcase.to_sym].id
+          options[:class_name] = child['class_name']
           page = Page.new(options)
           page.breadcrumb = page.title = child['title']
           page.slug = child['title'].slugify
           if child.has_key? "parts"
             child["parts"].each do |part|
               part["page_part_type"] = part["page_part_type"].to_s.camelize
+              part["filter_id"] = ["SmartyPants", "Markdown", "Textile", "WymEditor", "CKEditor"].include?(part["filter"]) ? "#{default_filter}" : ""
               page.parts.build(part)
             end
           else
