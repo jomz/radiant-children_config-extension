@@ -21,6 +21,9 @@ module ChildrenConfig::PageExtensions
                 end
                 page.parts << PagePart.new(options)
               end
+              if config.select{|c| c.has_key? "class_name"}.size > 0
+                page.class_name = config.select{|c| c.has_key? "class_name"}.first["class_name"].camelize
+              end
               page
             end
           else
@@ -30,7 +33,6 @@ module ChildrenConfig::PageExtensions
           new_with_defaults(config)
         end
       end
-      
       
     end
   end
