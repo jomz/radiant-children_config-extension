@@ -30,6 +30,13 @@ If you are using the [page_parts extension](https://github.com/digitalpulp/radia
         filter: none
         page_part_type: date_page_part
 
+You can also specify a new default class:
+
+    ---
+    - class_name: archive_page
+    - parts:
+      ...
+
 Another feature is to automatically create children for every new event page:
 
     ---
@@ -48,3 +55,20 @@ Another feature is to automatically create children for every new event page:
         parts:
           - name: body
             content: "<r:children:each><div><r:content /></div></r:children:each>"
+            
+It is possible to pass YAML to the content of a generated child, for example to set up a children\_config part again, you can use the '+' indicator for that. For example:
+
+    ---
+    - children:
+      - title: News
+        status: published
+        parts:
+          - name: body
+            content: "<r:children:each><div><r:content /></div></r:children:each>"
+          - name: children_config
+            content: |+
+              ---
+              - parts:
+                - name: body
+                  ...
+                  
