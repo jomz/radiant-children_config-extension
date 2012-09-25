@@ -7,19 +7,10 @@ module ChildrenConfig::PageExtensions
         begin
           unless parts.empty?
             config = YAML::load(parts)
-            if config.is_a?(Array) && config.select{|c| c.has_key? "parts"}.size > 0
+            if config.is_a?(Array)
               page = new
-              options = {}
-              config.select{|c| c.has_key? "parts"}.first["parts"].each do |part|
-                options[:name] = part['name']
-                options[:content] = part['content']
-                default_filter = part['filter'].to_s.camelize
-                options[:filter_id] = ["SmartyPants", "Markdown", "Textile", "WymEditor", "CKEditor"].include?(default_filter) ? "#{default_filter}" : ""
-                # Consider page part type if page_parts extension is present
-                if PagePart.column_names.include? "page_part_type"
-                  options[:page_part_type] = part['page_part_type'].to_s.camelize
-                end
-                page.parts << PagePart.new(options)
+              if config.select{|c| c.has_key? "parts"}.size > 0
+                page.parts << page.parts_from_config(config)
               end
               if config.select{|c| c.has_key? "class_name"}.size > 0
                 page.class_name = config.select{|c| c.has_key? "class_name"}.first["class_name"].camelize
@@ -50,11 +41,7 @@ module ChildrenConfig::PageExtensions
           page.breadcrumb = page.title = child['title']
           page.slug = child['title'].slugify
           if child.has_key? "parts"
-            child["parts"].each do |part|
-              part["page_part_type"] = part["page_part_type"].to_s.camelize
-              part["filter_id"] = ["SmartyPants", "Markdown", "Textile", "WymEditor", "CKEditor"].include?(part["filter"]) ? "#{default_filter}" : ""
-              page.parts.build(part)
-            end
+            page.parts << page.parts_from_config([child])
           else
             config = Radiant::Config
             default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
@@ -70,4 +57,21 @@ module ChildrenConfig::PageExtensions
       end
     end
   end
+  
+  def parts_from_config(config)
+    result, options = [], {}
+    config.select{|c| c.has_key? "parts"}.first["parts"].each do |part|
+      options[:name] = part['name']
+      options[:content] = part['content']
+      default_filter = part['filter'].to_s.camelize
+      options[:filter_id] = ["SmartyPants", "Markdown", "Textile", "WymEditor", "CKEditor"].include?(default_filter) ? "#{default_filter}" : ""
+      # Consider page part type if page_parts extension is present
+      if PagePart.column_names.include? "page_part_type"
+        options[:page_part_type] = part['page_part_type'].to_s.camelize
+      end
+      result << PagePart.new(options)
+    end
+    result
+  end
+  
 end
