@@ -15,6 +15,11 @@ module ChildrenConfig::PageExtensions
               if config.select{|c| c.has_key? "class_name"}.size > 0
                 page.class_name = config.select{|c| c.has_key? "class_name"}.first["class_name"].camelize
               end
+              if config.select{|c| c.has_key? "fields"}.size > 0
+                config.select{|c| c.has_key? "fields"}.first["fields"].each do |field|
+                  page.fields << PageField.new(field)
+                end
+              end
               page
             end
           else
@@ -48,7 +53,11 @@ module ChildrenConfig::PageExtensions
             default_parts.map do |name|
               page.parts << PagePart.new(:name => name, :filter_id => config['defaults.page.filter'])
             end
-            
+          end
+          if child.has_key? "fields"
+            child["fields"].each do |field|
+              page.fields << PageField.new(field)
+            end
           end
           raise page.errors.full_messages.join ", " unless page.valid?
           page.save
