@@ -36,6 +36,15 @@ You can also specify a new default class:
     - class_name: archive_page
     - parts:
       ...
+      
+Or default fields:
+
+    ---
+    - parts:
+      ...
+    - fields:
+      - name: foo
+        content: bar
 
 Another feature is to automatically create children for every new event page:
 
