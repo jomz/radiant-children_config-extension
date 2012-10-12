@@ -20,6 +20,11 @@ module ChildrenConfig::PageExtensions
                   page.fields << PageField.new(field)
                 end
               end
+              if config.select{|c| c.has_key? "layout"}.size > 0
+                config.select{|c| c.has_key? "layout"}.first["layout"].each do |field|
+                  page.layout = Layout.find_by_name(field)
+                end
+              end
               page
             end
           else
