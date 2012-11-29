@@ -1,9 +1,11 @@
 # Children Config
 
-Allows you to define new default page parts on every page.
+Allows you to define new default page properties for every new child of a certain page.
+Most commonly used to set new default page parts or fields, but you could also put 'template' content in page parts or create new children for the child page.
+
 Based on the [default\_page\_parts extension](https://github.com/santry/radiant-default-page-parts-extension), originally created by Sean Santry.
 
-## How to use
+## Examples
 
 Let's say you want all pages under "Events" to have the page parts "location", "description" and "date" by default. 
 Simply add a "children_config" page part to the "Events" page. In the content of that page part, put: 
