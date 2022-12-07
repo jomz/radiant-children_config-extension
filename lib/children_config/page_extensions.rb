@@ -2,7 +2,7 @@ module ChildrenConfig::PageExtensions
   def self.included(base)
     base.class_eval do
       after_save :create_children
-      
+
       def self.new_with_children_config(config = Radiant::Config, parts = String)
         begin
           unless parts.empty?
@@ -21,9 +21,9 @@ module ChildrenConfig::PageExtensions
                 end
               end
               if config.select{|c| c.has_key? "layout"}.size > 0
-                config.select{|c| c.has_key? "layout"}.first["layout"].each do |field|
-                  page.layout = Layout.find_by_name(field)
-                end
+                page.layout = Layout.find_by_name(
+                  config.select{|c| c.has_key? "layout"}.first["layout"]
+                )
               end
               page
             end
@@ -34,10 +34,10 @@ module ChildrenConfig::PageExtensions
           new_with_defaults(config)
         end
       end
-      
+
     end
   end
-  
+
   def create_children
     if updated_at == created_at and parent and children_config = parent.part(:children_config).try(:content)
       config = YAML::load(children_config)
@@ -67,11 +67,11 @@ module ChildrenConfig::PageExtensions
           raise page.errors.full_messages.join ", " unless page.valid?
           page.save
         end
-      
+
       end
     end
   end
-  
+
   def parts_from_config(config)
     result, options = [], {}
     config.select{|c| c.has_key? "parts"}.first["parts"].each do |part|
@@ -87,5 +87,5 @@ module ChildrenConfig::PageExtensions
     end
     result
   end
-  
+
 end
